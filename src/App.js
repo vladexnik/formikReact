@@ -1,5 +1,5 @@
 import './app.scss';
-import Form from './Form';
+import Form from './FormYup';
 
 function App() {
   return (
