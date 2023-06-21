@@ -1,9 +1,24 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage,useField } from 'formik';
 import * as Yup from 'yup';
 
 
+const MyTextInput=({label, ...props})=>{
 
-const Form = () => {    
+    const [field, meta]=useField(props); 
+    // позв получать массив из двух объектов ф и м
+
+    return(
+        <>
+            <label >{label}</label>
+            <input {...props} {...field}/>
+            {meta.touched && meta.error ? (
+                <div className="error">{meta.error }</div>
+            ) : null}
+        </>
+    )
+}
+
+const CustomForm = () => {    
     
     return (
         <Formik 
@@ -35,17 +50,19 @@ const Form = () => {
 
             onSubmit= {values => console.log(JSON.stringify(values,null,2))}  
         >
-            <Form className="form" onSubmit={formik.handleSubmit}>
+              
+            <Form className="form" >
                 <h2>Отправить пожертвование</h2>
-                <label htmlFor="name">Ваше имя</label>
-                <Field
+                
+                {/* если много полей */}
+                <MyTextInput
+                    label="Ваше имя"
                     id="name"
                     name="name"
-                    type="text"
-                   
+                    type="text" 
                 />
-               <ErrorMessage className="error" name="name" component="div"/>
                 
+
                 <label htmlFor="email">Ваша почта</label>
                 <Field
                     id="email"
@@ -62,44 +79,42 @@ const Form = () => {
                     type="number"
                    
                 />
-                <ErrorMessage className="error" name="name" component="div"/>
+                <ErrorMessage className="error" name="amount" component="div"/>
                 
                 <label htmlFor="currency">Валюта</label>
-                <select
+                <Field
                     id="currency"
                     name="currency"
-                    value={formik.values.currency}
-                    onChange={formik.handleChange}>
+                    as="select"
+                >
                         <option value="">Выберите валюту</option>
                         <option value="USD">USD</option>
                         <option value="UAH">UAH</option>
                         <option value="RUB">RUB</option>
-                </select>
-                {formik.errors.currency && formik.touched.currency ? <div className="error">{formik.errors.currency}</div> : null }
+                </Field>
+                <ErrorMessage className="error" name="currency" component="div"/>
+                
                 <label htmlFor="text">Ваше сообщение</label>
-                <textarea 
+                <Field
                     id="text"
                     name="text"
-                    value={formik.values.text}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    as="textarea"       
                 />
-                {formik.errors.text && formik.touched.text ?  <div className="error">{formik.errors.text}</div> : null }    
+
+                <ErrorMessage className="error" name="email" component="div"/>
                 <label className="checkbox">
-                    <input 
+                    <Field 
                         name="terms" 
                         type="checkbox" 
-                        value={formik.values.terms}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
                     />
                     Соглашаетесь с политикой конфиденциальности?
                 </label>
-                {formik.errors.terms && formik.touched.terms ? <div className="error">{formik.errors.terms}</div> : null }        
+                <ErrorMessage className="error" name="terms" component="div"/>
                 <button type="submit">Отправить</button>
-             </Form>
+             
+            </Form>
         </Formik>
     )
 }
 
-export default Form;
+export default CustomForm;
